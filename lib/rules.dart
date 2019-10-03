@@ -12,7 +12,7 @@ class _RulesState extends State<Rules> {
       child: Center(child: Column(
         children: <Widget>[
           Text("Rules"),
-          Text( "All the teams must have 3 members.\n\nOnce registration is done no further changes will be entertained.\n\nEach team must required a smart phone with internet connection\n\nOnly those who qualified prelims will participate in final round\n\nAll the team members will have to adhere to rules & regulations\n\nTeam not adhering to any guidelines will be disqualified\n\nDecision taken by the heads will be final")
+          Text( "   All the teams must have 3 members.\n\nOnce registration is done no further changes will be entertained.\n\nEach team must required a smart phone with internet connection\n\nOnly those who qualified prelims will participate in final round\n\nAll the team members will have to adhere to rules & regulations\n\nTeam not adhering to any guidelines will be disqualified\n\nDecision taken by the heads will be final")
         ],
       )),
       
