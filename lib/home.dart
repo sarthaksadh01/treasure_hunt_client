@@ -22,10 +22,18 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Treasure Hunt"),
+        actions: <Widget>[
+          IconButton(icon:Icon(Icons.info),onPressed: (){
+
+          },)
+        ],
+      ),
       body:currentPage ,
        bottomNavigationBar: FancyBottomNavigation(
-          circleColor: Color(0xfffd6a02),
-          inactiveIconColor: Color(0xfffd6a02),
+          circleColor: Theme.of(context).primaryColor,
+          inactiveIconColor: Theme.of(context).accentColor,
           tabs: [
             TabData(iconData: MaterialCommunityIcons.getIconData("file-document"), title: "Rules"),
             TabData(iconData: MaterialCommunityIcons.getIconData("treasure-chest"), title: "Game"),

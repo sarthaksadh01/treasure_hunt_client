@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -6,7 +8,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  var loading=false;
+  var loading = false;
+  var teamId = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +24,10 @@ class _LoginState extends State<Login> {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Color(0xFFf45d27), Color(0xFFf5851f)],
+                      colors: [
+                        Theme.of(context).primaryColor,
+                        Theme.of(context).accentColor
+                      ],
                     ),
                     borderRadius:
                         BorderRadius.only(bottomLeft: Radius.circular(90))),
@@ -31,15 +37,13 @@ class _LoginState extends State<Login> {
                     Spacer(),
                     Align(
                       alignment: Alignment.center,
-                      child: 
-                      Icon(
+                      child: Icon(
                         Icons.account_box,
                         size: 90,
                         color: Colors.white,
                       ),
                     ),
                     Spacer(),
-                   
                   ],
                 ),
               ),
@@ -64,7 +68,7 @@ class _LoginState extends State<Login> {
                       child: TextField(
                         onChanged: (val) {
                           setState(() {
-                            // email = val;
+                            teamId = val;
                           });
                         },
                         decoration: InputDecoration(
@@ -77,10 +81,8 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-                   
-                   
+
                     // Spacer(),
-                  
                   ],
                 ),
               )
@@ -88,53 +90,79 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
-      bottomNavigationBar:   Padding(
+      bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: InkWell(
-                        onTap: () {
-                          _login();
-                        },
-                        child: Container(
-                          height: 45,
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Color(0xFFf45d27), Color(0xFFf5851f)],
-                              ),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50))),
-                          child: Center(
-                            child: loading == false
-                                ? Text(
-                                    'Join'.toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                : CircularProgressIndicator(
-                                    valueColor: new AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                  ),
-                          ),
-                        ),
+          onTap: () {
+            _login();
+          },
+          child: Container(
+            height: 45,
+            width: MediaQuery.of(context).size.width / 1.2,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).accentColor
+                  ],
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(50))),
+            child: Center(
+              child: loading == false
+                  ? Text(
+                      'Join'.toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    )
+                  : CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                        Colors.white,
                       ),
+                    ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
+  _login() {
+    // Navigator.pushReplacementNamed(context, "/Home");
 
+    setState(() {
+      loading = true;
+    });
 
-_login(){
+    _checkTeamId();
+  }
 
-Navigator.pushReplacementNamed(context, "/Home");
+  _checkTeamId() {
+    Firestore.instance
+        .collection('teams')
+        .where('teamId', isEqualTo: teamId.trim())
+        .getDocuments()
+        .then((docSnapshot) {
+      int _numberOfUsers = docSnapshot.documents.length;
+      if (_numberOfUsers > 0) {
+        _saveData();
+      } else {
+        setState(() {
+          loading = false;
+        });
+        Fluttertoast.showToast(
+            msg: "Team not Registered!",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIos: 1,
+            backgroundColor: Theme.of(context).primaryColor,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        setState(() {
+          loading = false;
+        });
+      }
+    });
+  }
 
-
-  setState(() {
-    loading=true;
-  });
-
-}
-
-
+  _saveData() {}
 }
