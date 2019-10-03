@@ -12,11 +12,22 @@ class _GameState extends State<Game> {
   Widget build(BuildContext context) {
     return Container(
         child: Center(
-      child: RaisedButton(
-        onPressed: () {
-          _scanQR();
-        },
-        child: Text("Scan"),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+           Text("Treasure 1",style: TextStyle(fontSize: 40),),
+           Padding(
+             padding: const EdgeInsets.all(20.0),
+             child: Text("Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book.",textAlign: TextAlign.center,style: TextStyle(),),
+           ),
+          RaisedButton(
+            onPressed: () {
+              _scanQR();
+            },
+            child: Text("Scan"),
+          ),
+        ],
       ),
     ));
   }
