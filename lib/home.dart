@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
         title: Text("Treasure Hunt"),
         actions: <Widget>[
           IconButton(icon:Icon(Icons.info),onPressed: (){
+             Navigator.pushNamed(context, "/Profile");
 
           },)
         ],
