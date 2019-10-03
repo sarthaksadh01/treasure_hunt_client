@@ -1,6 +1,6 @@
 # treasure_hunt
 
-A new Flutter project.
+Project for treasure hunt
 
 ## Getting Started
 
