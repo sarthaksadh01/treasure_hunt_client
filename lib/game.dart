@@ -35,7 +35,6 @@ class _GameState extends State<Game> {
     snap.then((doc) {
       var list = doc.documents;
       list.forEach((qdata) {
-        print(qdata["level"]);
          var data = {
           "question": qdata["question"],
           "answer":qdata["answer"]
@@ -69,56 +68,57 @@ class _GameState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-    return !check
-        ? CircularProgressIndicator()
-        : Container(
-            child: Center(
-            child: StreamBuilder(
-                stream: Firestore.instance
-                    .collection("teams")
-                    .document("BTlSYoCGqtmVgwIpHJmM")
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  int point = snapshot.data.data["level"];
-                  print(question[point-1]);
-                  if (snapshot.data.data["level"] > 10) {
-                    return Container(
-                      child: Center(
-                        child: Text("Win"),
-                      ),
-                    );
-                  }
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Treasure ${snapshot.data.data["level"]}",
-                        style: TextStyle(fontSize: 40),
-                      ),
-                     
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Text(
-                          question[point-1]["question"],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(),
+    return Center(
+          child: !check
+          ? CircularProgressIndicator()
+          : Container(
+              child: Center(
+              child: StreamBuilder(
+                  stream: Firestore.instance
+                      .collection("teams")
+                      .document("BTlSYoCGqtmVgwIpHJmM")
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    int point = snapshot.data.data["level"];
+                    if (snapshot.data.data["level"] > 10) {
+                      return Container(
+                        child: Center(
+                          child: Text("Win"),
                         ),
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          _scanQR();
-                        },
-                        child: Text("Scan"),
-                      ),
-                    ],
-                  );
-                }),
-          ));
+                      );
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Treasure ${snapshot.data.data["level"]}",
+                          style: TextStyle(fontSize: 40),
+                        ),
+                       
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(
+                            question[point-1]["question"],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(),
+                          ),
+                        ),
+                        RaisedButton(
+                          onPressed: () {
+                            _scanQR();
+                          },
+                          child: Text("Scan"),
+                        ),
+                      ],
+                    );
+                  }),
+            )),
+    );
   }
 
   Future _scanQR() async {
