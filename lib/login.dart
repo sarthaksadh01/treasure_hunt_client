@@ -130,6 +130,12 @@ class _LoginState extends State<Login> {
       loading = true;
     });
 
+    if(teamId.trim()==""){
+      _showError("Invalid Team Name!");
+      return;
+
+    }
+
     _checkTeamId();
   }
 
@@ -143,11 +149,22 @@ class _LoginState extends State<Login> {
       if (_numberOfUsers > 0) {
         _saveData();
       } else {
-        setState(() {
-          loading = false;
-        });
-        Fluttertoast.showToast(
-            msg: "Team not Registered!",
+        _showError("Team not Registered!");
+      }
+    });
+  }
+
+  _saveData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('teamId', teamId.trim());
+    Navigator.pushReplacementNamed(context, "/Home");
+  }
+
+  _showError(String msg){
+
+
+     Fluttertoast.showToast(
+            msg: msg,
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
             timeInSecForIos: 1,
@@ -157,13 +174,6 @@ class _LoginState extends State<Login> {
         setState(() {
           loading = false;
         });
-      }
-    });
-  }
 
-  _saveData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('teamId', teamId.trim());
-    Navigator.pushReplacementNamed(context, "/Home");
   }
 }
