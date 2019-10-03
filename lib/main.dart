@@ -17,17 +17,6 @@ void main() {
       '/Login': (context) => Login(),
       '/Home': (context) => Home(),
       
-      // '/Profile': (context) => Profile(),
-      // '/AddDesc': (context) => AddDescFull(),
-      // '/SignUpA': (context) => SignupAFull(),
-      // '/SignUpB': (context) => SignupBFull(),
-      // '/Sub': (context) => SubCategoryFull(),
-      // '/ScreenRecord': (context) => ScreenRecord(),
-      // '/ViewLive': (context) => ViewLive(),
-      // '/OtherProfile': (context) => OtherProfile(),
-      // '/Donate': (context) => Donate(),
-      // '/Wallet': (context) => Wallet(),
-      // 'Search': (context) => Search(),
 
     },
   ));
