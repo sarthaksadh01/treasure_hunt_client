@@ -10,7 +10,7 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
-        primaryColor: Colors.blue, accentColor: Colors.blueAccent),
+        primaryColor: Colors.teal, accentColor: Colors.tealAccent),
     title: 'Treasure Hunt',
     initialRoute: '/',
     routes: {
