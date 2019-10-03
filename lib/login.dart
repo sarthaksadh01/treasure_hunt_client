@@ -127,6 +127,9 @@ class _LoginState extends State<Login> {
 
 _login(){
 
+Navigator.pushReplacementNamed(context, "/Home");
+
+
   setState(() {
     loading=true;
   });

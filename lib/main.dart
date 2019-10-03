@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import './splash.dart';
 import './login.dart';
+import './home.dart';
 
 void main() {
 
@@ -14,7 +15,7 @@ void main() {
     routes: {
       '/': (context) => SplashScreen(),
       '/Login': (context) => Login(),
-      // '/Home': (context) => MyHomePage(),
+      '/Home': (context) => Home(),
       
       // '/Profile': (context) => Profile(),
       // '/AddDesc': (context) => AddDescFull(),
