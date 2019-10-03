@@ -9,12 +9,10 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-  var snap = Firestore.instance
-      .collection("questions")
-      .document("Ixcm9NHAPQbkQRbLK0qa");
-  bool check = true;
-  var level = 1, question = "qq", answer;
-
+  var snap = Firestore.instance.collection("questions").getDocuments();
+  bool check = false;
+  var level = 1, answer;
+  List<Map> question = List(10);
   // getlevel() {
   //   // Firestore.instance
   //   // .collection("questions")
@@ -33,21 +31,39 @@ class _GameState extends State<Game> {
   //   });
   // }
 
-  // getquestion() {
-  //   snap.get().then((data) {
-  //     print(data["question"]);
-  //     print(data["answer"]);
-  //     setState(() {
-  //       question = data["question"];
-  //       answer = data["answer"];
-  //       check = true;
-  //     });
-  //   });
-  // }
+  getquestion() {
+    snap.then((doc) {
+      var list = doc.documents;
+      list.forEach((qdata) {
+        print(qdata["level"]);
+         var data = {
+          "question": qdata["question"],
+          "answer":qdata["answer"]
+        };
+        question[qdata["level"]-1] = data;
+      });
+      setState(() {
+       check= true; 
+      });
+      //  doc.forEach((data){
+
+      //  })
+    });
+    // snap.get().then((data) {
+    //   print(data["question"]);
+    //   print(data["answer"]);
+    //   setState(() {
+    //     question = data["question"];
+    //     answer = data["answer"];
+    //     check = true;
+    //   });
+    // });
+  }
 
   @override
   void initState() {
     // getlevel();
+    getquestion();
     super.initState();
   }
 
@@ -67,8 +83,8 @@ class _GameState extends State<Game> {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-
-                  print("${snapshot.data.data["level"]};");
+                  int point = snapshot.data.data["level"];
+                  print(question[point-1]);
                   if (snapshot.data.data["level"] > 10) {
                     return Container(
                       child: Center(
@@ -76,21 +92,6 @@ class _GameState extends State<Game> {
                       ),
                     );
                   }
-                  getq(l) async {
-                    QuerySnapshot data = await Firestore.instance
-                        .collection("questions")
-                        .where("level", isEqualTo: "$l")
-                        .getDocuments();
-                    var list = data.documents;
-                    print(list[0].documentID);
-                    // setState(() {
-                    //   level = l;
-                    //   // question = list[0]["question"];
-                    // });
-                    return true;
-                  }
-                
-                  getq("${snapshot.data.data["level"]}");
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -99,11 +100,11 @@ class _GameState extends State<Game> {
                         "Treasure ${snapshot.data.data["level"]}",
                         style: TextStyle(fontSize: 40),
                       ),
-                      Text("$question"),
+                     
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Text(
-                          " Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book.",
+                          question[point-1]["question"],
                           textAlign: TextAlign.center,
                           style: TextStyle(),
                         ),

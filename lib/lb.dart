@@ -15,25 +15,28 @@ class _LbState extends State<Lb> {
           stream: Firestore.instance
               .collection("teams")
               .orderBy("level", descending: true)
+              .orderBy("time",descending: false)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.hasError) {
               return CircularProgressIndicator();
             }
-            print("${snapshot.data.data["teamId"]}");
+            // print("${snapshot.data.data["teamId"]}");
             return ListView.builder(
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
+                List<DocumentSnapshot> ls= snapshot.data.documents;
+                String team_name = ls[index]["team_name"];
                 return Card(
                   child: Row(
                     children: <Widget>[
                       CircleAvatar(),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("${snapshot.data}"),
+                        child: Text(team_name),
                       ),
                       Spacer(),
-                      // Text("${index+1}"),
+                      Text("${index+1}"),
                     ],
                   ),
                 );
