@@ -97,7 +97,7 @@ class _GameState extends State<Game> {
                       children: <Widget>[
                         Text(
                           "Treasure ${snapshot.data.data["level"]}",
-                          style: TextStyle(fontSize: 40),
+                          style: TextStyle(fontSize: 50),
                         ),
                        
                         Padding(
@@ -105,7 +105,9 @@ class _GameState extends State<Game> {
                           child: Text(
                             question[point-1]["question"],
                             textAlign: TextAlign.center,
-                            style: TextStyle(),
+                            style: TextStyle(
+                              fontSize: 30
+                            ),
                           ),
                         ),
                         RaisedButton(

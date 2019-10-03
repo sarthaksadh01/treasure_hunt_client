@@ -19,9 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         body: Center(
           child: Image.asset(
-          "assets/treasure.png",
-          // height: MediaQuery.of(context).size.height,
-          // width: MediaQuery.of(context).size.width,
+          "assets/images/treasure1.gif",
+          height: MediaQuery.of(context).size.height/2,
+          width: MediaQuery.of(context).size.width/2,
         ),
         )
         );
