@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -81,8 +82,6 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                     ),
-
-                    // Spacer(),
                   ],
                 ),
               )
@@ -127,8 +126,6 @@ class _LoginState extends State<Login> {
   }
 
   _login() {
-    // Navigator.pushReplacementNamed(context, "/Home");
-
     setState(() {
       loading = true;
     });
@@ -164,5 +161,9 @@ class _LoginState extends State<Login> {
     });
   }
 
-  _saveData() {}
+  _saveData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('teamId', teamId.trim());
+    Navigator.pushReplacementNamed(context, "/Home");
+  }
 }
