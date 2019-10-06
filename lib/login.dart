@@ -130,10 +130,9 @@ class _LoginState extends State<Login> {
       loading = true;
     });
 
-    if(teamId.trim()==""){
+    if (teamId.trim() == "") {
       _showError("Invalid Team Name!");
       return;
-
     }
 
     _checkTeamId();
@@ -147,33 +146,31 @@ class _LoginState extends State<Login> {
         .then((docSnapshot) {
       int _numberOfUsers = docSnapshot.documents.length;
       if (_numberOfUsers > 0) {
-        _saveData();
+        _saveData(docSnapshot.documents[0].documentID);
       } else {
         _showError("Team not Registered!");
       }
     });
   }
 
-  _saveData() async {
+  _saveData(String docId) async {
+    print(docId);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('teamId', teamId.trim());
+    await prefs.setString('teamId', docId.toString());
     Navigator.pushReplacementNamed(context, "/Home");
   }
 
-  _showError(String msg){
-
-
-     Fluttertoast.showToast(
-            msg: msg,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            backgroundColor: Theme.of(context).primaryColor,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        setState(() {
-          loading = false;
-        });
-
+  _showError(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIos: 1,
+        backgroundColor: Theme.of(context).primaryColor,
+        textColor: Colors.white,
+        fontSize: 16.0);
+    setState(() {
+      loading = false;
+    });
   }
 }
