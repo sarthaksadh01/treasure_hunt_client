@@ -17,12 +17,22 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        body: Center(
-          child: Image.asset(
-          "assets/images/treasure1.gif",
-          height: MediaQuery.of(context).size.height/2,
-          width: MediaQuery.of(context).size.width/2,
-        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Treasure Hunt",style: TextStyle(color: Colors.white,fontSize: 40, fontWeight: FontWeight.bold,),)
+            ),
+            Center(
+              child: Image.asset(
+              "assets/images/treasure1.gif",
+              height: MediaQuery.of(context).size.height/2,
+              width: MediaQuery.of(context).size.width/2,
+            ),
+            ),
+          ],
         )
         );
   }

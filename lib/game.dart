@@ -91,32 +91,40 @@ class _GameState extends State<Game> {
                         ),
                       );
                     }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Treasure ${snapshot.data.data["level"]}",
-                          style: TextStyle(fontSize: 50),
-                        ),
-                       
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            question[point-1]["question"],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 30
+                    return Container(
+                      child: Column(
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Treasure ${snapshot.data.data["level"]}",
+                              style: TextStyle(fontSize: 50),
                             ),
                           ),
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            _scanQR();
-                          },
-                          child: Text("Scan"),
-                        ),
-                      ],
+                        //  Padding(
+                        //    padding: EdgeInsets.all(50),
+                        //  ),
+                          Padding(
+                            padding: const EdgeInsets.all(30.0),
+                            child: Text(
+                              question[point-1]["question"],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 20
+                              ),
+                            ),
+                          ),
+                          RaisedButton(
+                            color: Color(0xFF00162b),
+                            onPressed: () {
+                              _scanQR();
+                            },
+                            child: Text("Scan",style: TextStyle(color: Colors.white),),
+                          ),
+                        ],
+                      ),
                     );
                   }),
             )),
