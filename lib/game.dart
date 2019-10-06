@@ -4,6 +4,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class Game extends StatefulWidget {
   @override
@@ -104,73 +105,70 @@ class _GameState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return 
+    Scaffold(
+      body:  Center(
       child: !check
           ? CircularProgressIndicator()
           : Container(
               child: Center(
-              child: StreamBuilder(
-                  stream: Firestore.instance
-                      .collection("teams")
-                      .document(teamId)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData)
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    int point = snapshot.data.data["level"];
-                    if (snapshot.data.data["level"] > 7) {
-                      return Container(
-                        child: Center(
-                          child: Text("Win"),
-                        ),
-                      );
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Treasure ${snapshot.data.data["level"]}",
-                          style: TextStyle(fontSize: 50),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(
-                            question[point - 1]["question"],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 30),
+              child: SingleChildScrollView(
+                child: StreamBuilder(
+                    stream: Firestore.instance
+                        .collection("teams")
+                        .document(teamId)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      int point = snapshot.data.data["level"];
+                      if (snapshot.data.data["level"] > 7) {
+                        return Container(
+                          child: Center(
+                            child: Text("Win"),
                           ),
-                        //  Padding(
-                        //    padding: EdgeInsets.all(50),
-                        //  ),
+                        );
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "Level ${snapshot.data.data["level"]}",
+                            style: TextStyle(fontSize: 50),
+                          ),
                           Padding(
-                            padding: const EdgeInsets.all(30.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: Text(
-                              question[point-1]["question"],
+                              question[point - 1]["question"],
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 20
-                              ),
+                              style: TextStyle(fontSize: 30),
                             ),
                           ),
-                          RaisedButton(
-                            color: Color(0xFF00162b),
-                            onPressed: () {
-                              _scanQR();
-                            },
-                            child: Text("Scan",style: TextStyle(color: Colors.white),),
-                          ),
+                          
+                        
                         ],
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+              ),
             )),
+    ) ,
+    floatingActionButton: FloatingActionButton(
+
+                              // color: Color(0xFF00162b),
+                              onPressed: () {
+                                _scanQR();
+                              },
+                              child: Icon(FontAwesome.getIconData("qrcode"))),
     );
+     
+    
+  
   }
 
-  Future _scanQR() async {
+  _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
 
