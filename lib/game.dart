@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Game extends StatefulWidget {
   @override
@@ -12,71 +14,105 @@ class _GameState extends State<Game> {
   var snap = Firestore.instance.collection("questions").getDocuments();
   bool check = false;
   var level = 1, answer;
+  var teamId;
   List<Map> question = List(10);
-  // getlevel() {
-  //   // Firestore.instance
-  //   // .collection("questions")
-  //   // .where("level",isEqualTo :"${snapshot.data.data["level"]}").
-  //   // Firestore.instance.collection("teams").where("teamId",isEqualTo:"BTlSYoCGqtmVgwIpHJmM").snapshots();
-  //   Firestore.instance
-  //       .collection("teams")
-  //       .document("BTlSYoCGqtmVgwIpHJmM")
-  //       .get()
-  //       .then((doc) {
-  //     print(doc["level"]);
-  //     setState(() {
-  //       level = doc["level"];
-  //     });
-  //     getquestion();
-  //   });
-  // }
 
-  getquestion() {
+  _getquestion() {
     snap.then((doc) {
       var list = doc.documents;
       list.forEach((qdata) {
-         var data = {
-          "question": qdata["question"],
-          "answer":qdata["answer"]
-        };
-        question[qdata["level"]-1] = data;
+        var data = {"question": qdata["question"], "answer": qdata["answer"]};
+        question[qdata["level"] - 1] = data;
       });
       setState(() {
-       check= true; 
+        check = true;
       });
-      //  doc.forEach((data){
-
-      //  })
     });
-    // snap.get().then((data) {
-    //   print(data["question"]);
-    //   print(data["answer"]);
-    //   setState(() {
-    //     question = data["question"];
-    //     answer = data["answer"];
-    //     check = true;
-    //   });
-    // });
+  }
+
+  _getLevel(String teamId) {
+    Firestore.instance.collection("teams").document(teamId).get().then((doc) {
+      setState(() {
+        level = doc.data['level'];
+        print("level is --- ");
+        print(level);
+        _getquestion();
+      });
+    });
+  }
+
+  _loadUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _teamId = prefs.getString('teamId');
+    if (_teamId == null) {
+      print("teamID is NULLLLL------");
+    } else {
+      setState(() {
+        teamId = _teamId;
+        print("team id is ---");
+        print(teamId);
+        _getLevel(teamId);
+      });
+    }
+  }
+
+  _changeLevel() {
+    Firestore.instance
+        .collection("teams")
+        .document(teamId)
+        .updateData({'level': level + 1}).then((onValue) {
+      setState(() {
+        level++;
+        check = true;
+      });
+    });
+  }
+
+  _showAlert(String type, String title, String text) {
+    Alert(
+      context: context,
+      type: type == "error" ? AlertType.error : AlertType.success,
+      title: title,
+      desc: text,
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Continue",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            if (type != "error") {
+              _changeLevel();
+              setState(() {
+                check = false;
+              });
+            }
+
+            Navigator.pop(context);
+          },
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        ),
+      ],
+    ).show();
   }
 
   @override
   void initState() {
-    // getlevel();
-    getquestion();
+    _loadUser();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-          child: !check
+      child: !check
           ? CircularProgressIndicator()
           : Container(
               child: Center(
               child: StreamBuilder(
                   stream: Firestore.instance
                       .collection("teams")
-                      .document("BTlSYoCGqtmVgwIpHJmM")
+                      .document(teamId)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
@@ -84,24 +120,27 @@ class _GameState extends State<Game> {
                         child: CircularProgressIndicator(),
                       );
                     int point = snapshot.data.data["level"];
-                    if (snapshot.data.data["level"] > 10) {
+                    if (snapshot.data.data["level"] > 7) {
                       return Container(
                         child: Center(
                           child: Text("Win"),
                         ),
                       );
                     }
-                    return Container(
-                      child: Column(
-                        // crossAxisAlignment: CrossAxisAlignment.center,
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Treasure ${snapshot.data.data["level"]}",
-                              style: TextStyle(fontSize: 50),
-                            ),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Treasure ${snapshot.data.data["level"]}",
+                          style: TextStyle(fontSize: 50),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Text(
+                            question[point - 1]["question"],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 30),
                           ),
                         //  Padding(
                         //    padding: EdgeInsets.all(50),
@@ -134,11 +173,12 @@ class _GameState extends State<Game> {
   Future _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
-      setState(() {
-        print("qr result is ---------------------");
-        print(qrResult);
-        // result = qrResult;
-      });
+
+      if (qrResult == question[level - 1]['answer']) {
+        _showAlert("correct", "Success!", "Correct Answer!");
+      } else {
+        _showAlert("error", "Wrong", "Try Again!");
+      }
     } on PlatformException catch (ex) {
       if (ex.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
@@ -158,10 +198,5 @@ class _GameState extends State<Game> {
         // result = "Unknown Error $ex";
       });
     }
-  }
-
-  _scan() async {
-    String text = await BarcodeScanner.scan();
-    print(text);
   }
 }

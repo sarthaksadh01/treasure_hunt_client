@@ -23,7 +23,6 @@ class Profile extends StatelessWidget {
                 fontSize: 40.0,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-               
               ),
             ),
             SizedBox(
@@ -83,8 +82,7 @@ class InfoCard extends StatelessWidget {
           ),
           title: Text(
             text,
-            style: TextStyle(
-              // fontFamily: 'Source Sans Pro',
+            style: TextStyle(           
               fontSize: 20.0,
               // color: Colors.teal,
             ),

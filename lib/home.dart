@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
+
 import './game.dart';
 import './lb.dart';
 import './rules.dart';
@@ -50,4 +51,6 @@ class _HomeState extends State<Home> {
         ));
     
   }
+
+ 
 }
