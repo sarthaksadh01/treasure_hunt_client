@@ -138,7 +138,7 @@ class _GameState extends State<Game> {
 
                               int point = snapshot.data.data["level"];
 
-                              if (snapshot.data.data["level"] > 6) {
+                              if (snapshot.data.data["level"] > 7) {
                                 return Padding(
                                   padding: const EdgeInsets.only(top:80.0),
                                   child: Column(
@@ -146,40 +146,49 @@ class _GameState extends State<Game> {
                                           CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
-                                        Text("Congratulations!!!",style: TextStyle(fontSize: MediaQuery.of(context).size.width/10),),
-                                        Image.asset(
-                                          "assets/images/treasure1.gif",
-                                          height:
-                                              MediaQuery.of(context).size.height /
-                                                  4,
+                                        Padding(
+                                          padding: const EdgeInsets.only(left:20.0),
+                                          child: Text("Congratulations!!!",style: TextStyle(fontSize: MediaQuery.of(context).size.width/10),),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Image.asset(
+                                            "assets/images/treasure.gif",
+                                            height:
+                                                MediaQuery.of(context).size.height /
+                                                    5,
+                                          ),
                                         ),
                                       ],
                                     ),
                                 );
                               }
 
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  snapshot.data.data["level"] > 6
-                                      ? Text(
-                                          "Final Level",
-                                          style: TextStyle(fontSize: 50),
-                                        )
-                                      : Text(
-                                          "Level ${snapshot.data.data["level"]}",
-                                          style: TextStyle(fontSize: 50),
-                                        ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                      question[point - 1]["question"],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 20),
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    snapshot.data.data["level"] > 6
+                                        ? Text(
+                                            "Final Level",
+                                            style: TextStyle(fontSize: 50),
+                                          )
+                                        : Text(
+                                            "Level ${snapshot.data.data["level"]}",
+                                            style: TextStyle(fontSize: 50),
+                                          ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Text(
+                                        question[point - 1]["question"],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 20),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
                             }),
                       ),
