@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'loader.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
