@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text("Treasure Hunt"),
         actions: <Widget>[
-          IconButton(icon:Icon(Icons.info),onPressed: (){
+          IconButton(icon:Icon(Icons.portrait),onPressed: (){
              Navigator.pushNamed(context, "/Profile");
 
           },)

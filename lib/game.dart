@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:treasure_hunt/loader.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 class Game extends StatefulWidget {
   @override
@@ -107,75 +108,76 @@ class _GameState extends State<Game> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: !check
-            ? Loader()
-            : Container(
-                child: Center(
-                    child: StreamBuilder(
-                        stream: Firestore.instance
-                            .collection("teams")
-                            .document(teamId)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData)
-                            return Center(
-                              child: Loader(),
-                            );
-                          int point = snapshot.data.data["level"];
-                          if (snapshot.data.data["level"] > 7) {
-                            return Container(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[Loader(), Text("Win")],
-                              ),
-                            );
-                          }
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                "Treasure ${snapshot.data.data["level"]}",
-                                style: TextStyle(fontSize: 50),
-                              ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(20.0),
-                              //   child: Text(
-                              //     question[point - 1]["question"],
-                              //     textAlign: TextAlign.center,
-                              //     style: TextStyle(fontSize: 20),
-                              //   ),
-                              // ),
-                              //  Padding(
-                              //    padding: EdgeInsets.all(50),
-                              //  ),
-                              Padding(
-                                padding: const EdgeInsets.all(30.0),
-                                child: Text(
-                                  question[point - 1]["question"],
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 20),
+    return Scaffold(
+      body: ListView(
+        children: <Widget>[
+          Center(
+            child: !check
+                ? Loader()
+                : Container(
+                    child: Center(
+                    child: SingleChildScrollView(
+                      child: StreamBuilder(
+                          stream: Firestore.instance
+                              .collection("teams")
+                              .document(teamId)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData)
+                              return Center(
+                                child: Loader(),
+                              );
+
+                            int point = snapshot.data.data["level"];
+
+                            if (snapshot.data.data["level"] > 7) {
+                              return Container(
+                                child: Center(
+                                  child: Text("Win"),
                                 ),
-                              ),
-                              RaisedButton(
-                                color: Color(0xFF00162b),
-                                onPressed: () {
-                                  _scanQR();
-                                },
-                                child: Text(
-                                  "Scan",
-                                  style: TextStyle(color: Colors.white),
+                              );
+                            }
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                snapshot.data.data["level"] > 6
+                                    ? Text(
+                                        "Final Level",
+                                        style: TextStyle(fontSize: 50),
+                                      )
+                                    : Text(
+                                        "Level ${snapshot.data.data["level"]}",
+                                        style: TextStyle(fontSize: 50),
+                                      ),
+                                Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Text(
+                                    question[point - 1]["question"],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 30),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        })),
-              ));
+                              ],
+                            );
+                          }),
+                    ),
+                  )),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+
+          // color: Color(0xFF00162b),
+          onPressed: () {
+            _scanQR();
+          },
+          child: Icon(FontAwesome.getIconData("qrcode"))),
+    );
   }
 
-  Future _scanQR() async {
+  _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
 

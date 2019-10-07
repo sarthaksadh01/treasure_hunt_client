@@ -11,139 +11,154 @@ class Lb extends StatefulWidget {
 }
 
 class _LbState extends State<Lb> {
-  String _teamId;
-  bool check = false;
-  int rank;
-  rankteam(l) {
-    rank = l + 1;
-  }
-
-  getId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _teamId = prefs.getString('teamId');
-    });
-    if (_teamId != null) {
-      print("apki id haii " + _teamId);
-      setState(() {
-        check = true;
-      });
-    }
-  }
+  var teamId;
+  var loading = true;
 
   @override
   void initState() {
-    getId();
+    _loadUser();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return !check
-        ? Loader()
-        : Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: StreamBuilder(
-              stream: Firestore.instance
-                  .collection("teams")
-                  .orderBy("level", descending: true)
-                  .orderBy("time", descending: false)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.hasError) {
-                  return Loader();
-                }
-                // print("${snapshot.data.data["teamId"]}");
-                return CustomScrollView(
-                  slivers: <Widget>[
-                    SliverToBoxAdapter(),
-                    SliverToBoxAdapter(
-                      // child: Row(
-                      //   crossAxisAlignment: CrossAxisAlignment.start,
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: <Widget>[
-                      //     Text(
-                      //       "Your Rank : ",
-                      //       style: TextStyle(fontSize: 30),
-                      //     ),
-                      //     Spacer(),
-                      //     Flexible(
-                      //         child: Text(
-                      //       "$rank",
-                      //       style: TextStyle(
-                      //         fontSize: 30,
-                      //       ),
-                      //       overflow: TextOverflow.clip,
-                      //     )),
-                      //   ],
-                      // ),
-                    ),
-                    SliverToBoxAdapter(
-                        child: Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: ListView.builder(
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            List<DocumentSnapshot> ls = snapshot.data.documents;
+    return Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: loading
+            ? Center(child: Loader(),)
+            : StreamBuilder(
+                stream: Firestore.instance
+                    .collection("teams")
+                    .orderBy("level", descending: true)
+                    .orderBy("time", descending: false)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || snapshot.hasError) {
+                    return Loader();
+                  }
+                  return ListView.builder(
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) {
+                      List<DocumentSnapshot> ls = snapshot.data.documents;
+                      String teamName = ls[index]["team_name"];
+                      if(index==0){
+                        return Column(children: <Widget>[
+                          Card(
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          color:Colors.white,
+                            child: Row(
+                         
+                            children: <Widget>[
 
-                            if (ls[index].documentID == _teamId) {
-                              rankteam(index);
-                              print(rank);
-                            }
-                            String team_name = ls[index]["team_name"];
-                            // return Text("hahahha");
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                color: Color(0xFF00162b),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      index < 2
-                                          ? CircleAvatar(
-                                              backgroundImage: AssetImage(
-                                                  "assets/images/prize.gif"),
-                                              backgroundColor: Colors.white,
-                                              // child: Image.asset("assets/images/prize.gif",height:100),
-                                              // child: Text("${index + 1}",style: TextStyle(color: Color(0xFF00162b)),),
-                                            )
-                                          : CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              child: Text(
-                                                "${index + 1}",
-                                                style: TextStyle(
-                                                    color: Color(0xFF00162b)),
-                                              ),
-                                            ),
-                                      Padding(
-                                        padding: EdgeInsets.only(left: 20),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          team_name,
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      Spacer(),
-                                    ],
-                                  ),
-                                ),
+                               Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Rank"),
                               ),
-                            );
-                          },
-                        ),
+                             
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Team Name"),
+                              ),
+
+                              Spacer(),
+
+                                Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Level"),
+                              ),
+                            
+                            ],
+                          ),
+                          )
+                      
                       ),
-                    )),
-                    SliverList(
-                      delegate: SliverChildListDelegate([]),
-                    ),
-                  ],
-                );
-              },
-            ));
+                      Card(
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          color:teamId==ls[index].documentID?Colors.amberAccent:Colors.white,
+                            child: Row(
+                         
+                            children: <Widget>[
+                             index>=1? CircleAvatar(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                child: Text("${index + 1}"),
+                              ):CircleAvatar(
+                                backgroundImage: AssetImage("assets/images/prize.gif"),
+                              ),
+                              
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(teamName),
+                              ),
+
+                              Spacer(),
+
+                                Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("${ls[index]['level']}"),
+                              ),
+                            
+                            ],
+                          ),
+                          )
+                      
+                      )
+
+                        ],);
+
+                      }
+                      else{
+
+                        return Card(
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          color:teamId==ls[index].documentID?Colors.amberAccent:Colors.white,
+                            child: Row(
+                         
+                            children: <Widget>[
+                              CircleAvatar(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                child: Text("${index + 1}"),
+                              ),
+                              
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(teamName),
+                              ),
+
+                              Spacer(),
+
+                                Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("${ls[index]['level']}"),
+                              ),
+                            
+                            ],
+                          ),
+                          )
+                      
+                      );
+
+                      }
+                    },
+                  );
+                },
+              ));
+  }
+
+  _loadUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _teamId = prefs.getString('teamId');
+    if (_teamId == null) {
+      print("teamID is NULLLLL------");
+    } else {
+      setState(() {
+        teamId = _teamId;
+        print("team id is ---");
+        print(teamId);
+        loading = false;
+      });
+    }
   }
 }
