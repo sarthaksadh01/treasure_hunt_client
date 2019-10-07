@@ -109,64 +109,85 @@ class _GameState extends State<Game> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: <Widget>[
-          Center(
-            child: !check
-                ? Loader()
-                : Container(
-                    child: Center(
-                    child: SingleChildScrollView(
-                      child: StreamBuilder(
-                          stream: Firestore.instance
-                              .collection("teams")
-                              .document(teamId)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData)
-                              return Center(
-                                child: Loader(),
-                              );
+      body: !check
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Loader(),
+              ),
+            )
+          : ListView(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                        child: Center(
+                      child: SingleChildScrollView(
+                        child: StreamBuilder(
+                            stream: Firestore.instance
+                                .collection("teams")
+                                .document(teamId)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData)
+                                return Center(
+                                  child: Loader(),
+                                );
 
-                            int point = snapshot.data.data["level"];
+                              int point = snapshot.data.data["level"];
 
-                            if (snapshot.data.data["level"] > 7) {
-                              return Container(
-                                child: Center(
-                                  child: Text("Win"),
-                                ),
-                              );
-                            }
+                              if (snapshot.data.data["level"] > 6) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top:80.0),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text("Congratulations!!!",style: TextStyle(fontSize: MediaQuery.of(context).size.width/10),),
+                                        Image.asset(
+                                          "assets/images/treasure1.gif",
+                                          height:
+                                              MediaQuery.of(context).size.height /
+                                                  4,
+                                        ),
+                                      ],
+                                    ),
+                                );
+                              }
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                snapshot.data.data["level"] > 6
-                                    ? Text(
-                                        "Final Level",
-                                        style: TextStyle(fontSize: 50),
-                                      )
-                                    : Text(
-                                        "Level ${snapshot.data.data["level"]}",
-                                        style: TextStyle(fontSize: 50),
-                                      ),
-                                Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Text(
-                                    question[point - 1]["question"],
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 30),
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  snapshot.data.data["level"] > 6
+                                      ? Text(
+                                          "Final Level",
+                                          style: TextStyle(fontSize: 50),
+                                        )
+                                      : Text(
+                                          "Level ${snapshot.data.data["level"]}",
+                                          style: TextStyle(fontSize: 50),
+                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Text(
+                                      question[point - 1]["question"],
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 20),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            );
-                          }),
-                    ),
-                  )),
-          ),
-        ],
-      ),
+                                ],
+                              );
+                            }),
+                      ),
+                    )),
+                  ],
+                ),
+              ],
+            ),
       floatingActionButton: FloatingActionButton(
 
           // color: Color(0xFF00162b),
