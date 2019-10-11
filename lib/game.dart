@@ -61,10 +61,8 @@ class _GameState extends State<Game> {
   }
 
   _changeLevel() {
-    Firestore.instance
-        .collection("teams")
-        .document(teamId)
-        .updateData({'level': level + 1}).then((onValue) {
+    Firestore.instance.collection("teams").document(teamId).updateData(
+        {'level': level + 1, 'time': new DateTime.now()}).then((onValue) {
       setState(() {
         level++;
         check = true;
@@ -140,27 +138,36 @@ class _GameState extends State<Game> {
 
                               if (snapshot.data.data["level"] > 7) {
                                 return Padding(
-                                  padding: const EdgeInsets.only(top:80.0),
+                                  padding: const EdgeInsets.only(top: 80.0),
                                   child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(left:20.0),
-                                          child: Text("Congratulations!!!",style: TextStyle(fontSize: MediaQuery.of(context).size.width/10),),
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                        child: Text(
+                                          "Congratulations!!!",
+                                          style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  10),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.asset(
-                                            "assets/images/treasure.gif",
-                                            height:
-                                                MediaQuery.of(context).size.height /
-                                                    5,
-                                          ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Image.asset(
+                                          "assets/images/treasure.gif",
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              5,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               }
 

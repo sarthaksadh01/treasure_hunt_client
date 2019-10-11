@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fancy_bottom_navigation/fancy_bottom_navigation.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './game.dart';
 import './lb.dart';
@@ -10,36 +10,45 @@ import './rules.dart';
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
-  
 }
 
 class _HomeState extends State<Home> {
   var currentPage;
   @override
   void initState() {
-    currentPage= new Rules();
+    currentPage = new Rules();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Treasure Hunt"),
-        actions: <Widget>[
-          IconButton(icon:Icon(Icons.portrait),onPressed: (){
-             Navigator.pushNamed(context, "/Profile");
-
-          },)
-        ],
-      ),
-      body:currentPage ,
-       bottomNavigationBar: FancyBottomNavigation(
+        appBar: AppBar(
+          title: Text("Treasure Hunt"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.portrait),
+              onPressed: () {
+                Navigator.pushNamed(context, "/Profile");
+              },
+            ),
+          
+          ],
+        ),
+        body: currentPage,
+        bottomNavigationBar: FancyBottomNavigation(
           circleColor: Theme.of(context).primaryColor,
           inactiveIconColor: Theme.of(context).accentColor,
           tabs: [
-            TabData(iconData: MaterialCommunityIcons.getIconData("file-document"), title: "Rules"),
-            TabData(iconData: MaterialCommunityIcons.getIconData("treasure-chest"), title: "Game"),
-            TabData(iconData: AntDesign.getIconData("linechart"), title: "LeaderBoard"),
+            TabData(
+                iconData: MaterialCommunityIcons.getIconData("file-document"),
+                title: "Rules"),
+            TabData(
+                iconData: MaterialCommunityIcons.getIconData("treasure-chest"),
+                title: "Game"),
+            TabData(
+                iconData: AntDesign.getIconData("linechart"),
+                title: "LeaderBoard"),
           ],
           onTabChangedListener: (position) {
             setState(() {
@@ -49,8 +58,5 @@ class _HomeState extends State<Home> {
             });
           },
         ));
-    
   }
-
- 
 }

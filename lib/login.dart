@@ -148,18 +148,31 @@ class _LoginState extends State<Login> {
         .then((docSnapshot) {
       int _numberOfUsers = docSnapshot.documents.length;
       if (_numberOfUsers > 0) {
-        _saveData(docSnapshot.documents[0].documentID);
+        print("number of users are--");
+        print(_numberOfUsers);
+        print(docSnapshot.documents[0].data);
+        if (docSnapshot.documents[0].data['login'] ==
+            docSnapshot.documents[0].data['members']) {
+          _showError("Maximum Login Limit Reached");
+        } else {
+          _saveData(docSnapshot.documents[0].documentID,
+              docSnapshot.documents[0].data['login'] + 1);
+        }
       } else {
         _showError("Team not Registered!");
       }
     });
   }
 
-  _saveData(String docId) async {
-    print(docId);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('teamId', docId.toString());
-    Navigator.pushReplacementNamed(context, "/Home");
+  _saveData(String docId, int loginNumber) async {
+    Firestore.instance
+        .collection("teams")
+        .document(docId)
+        .updateData({'login': loginNumber}).then((onValue) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('teamId', docId.toString());
+      Navigator.pushReplacementNamed(context, "/Home");
+    });
   }
 
   _showError(String msg) {
